@@ -67,3 +67,4 @@ module.exports = mongoose.model('suppliers', SupplierSchema);
 
 */
 "use strict";
+//# sourceMappingURL=suppliers.js.map

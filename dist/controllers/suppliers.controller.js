@@ -63,3 +63,4 @@ module.exports = SuppliersController;
 /** this ends this file
 * server/controllers/suppliers.controller
 **/
+//# sourceMappingURL=suppliers.controller.js.map

@@ -1,4 +1,4 @@
-import {URI} from '../config/config'
+import {URI} from './config/config'
 const mongoose = require('mongoose');
 
 

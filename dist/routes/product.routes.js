@@ -1,11 +1,18 @@
 'use strict';
 
+var _index = require('../multer/index');
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var express = require('express');
 var router = express.Router();
 
 var productsController = require('../controllers/product.controller');
 
 router.get('/', productsController.getProducts);
+router.post('/', _index2.default, productsController.createProduct);
 // router.get('/count', productsController.getCount);
 // router.get('/actives', productsController.getActives);
 // router.get('/actives/count', productsController.getActivesCount);
@@ -26,8 +33,6 @@ router.put('/:id', productsController.editProduct);
 */
 router.put('/addimage/:id', productsController.addImage);
 
-router.post('/', productsController.createProduct);
-
 router.delete('/:id', productsController.deleteProduct);
 
 module.exports = router;
@@ -35,3 +40,4 @@ module.exports = router;
 /** this ends this file
 * server/routes/product.routes
 **/
+//# sourceMappingURL=product.routes.js.map

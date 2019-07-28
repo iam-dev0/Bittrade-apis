@@ -9,6 +9,7 @@ var productSchema = new Schema({
     description: { type: String, required: true },
     // size: { type: String, required: true },
     // weight: { type: String, required: true },
+    title: { type: String, required: true },
     price: { type: Number, required: true },
     //discount: { type: Number, required: true },
     //  on_sale: { type: Boolean, default: false },
@@ -18,7 +19,8 @@ var productSchema = new Schema({
     //   to_serve: { type: Number, required: false },
     //   to_receive: { type: Number, required: false },
     //   ubication: { type: String, required: false },
-    images: [{ image: String }]
+    images: [{ type: String }]
 }, { timestamps: true, autoIndex: true });
 
 module.exports = mongoose.model('products', productSchema);
+//# sourceMappingURL=products.js.map

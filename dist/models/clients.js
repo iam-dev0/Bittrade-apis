@@ -52,3 +52,4 @@ var ClientSchema = new Schema({
 ClientSchema.index;
 
 module.exports = mongoose.model('customers', ClientSchema);
+//# sourceMappingURL=clients.js.map

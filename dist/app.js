@@ -14,13 +14,13 @@ var _require = require('./database'),
 
 
 app.set('port', process.env.PORT || 3000);
-
+app.use(express.static('./public'));
 /**
  * M I D D L E W A R E S
  */
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:4200' }));
+app.use(cors());
 
 /**
  * R O U T E S
@@ -43,3 +43,4 @@ app.listen(app.get('port'), function (error) {
 /** this ends this file
 * server/index
 **/
+//# sourceMappingURL=app.js.map

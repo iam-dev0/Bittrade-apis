@@ -1,145 +1,161 @@
-
+const Product = require("../models/products");
+import { containerUrlFrom, BlockBlobURLFrom, uploadStream } from "../azure";
+import uuid from "uuid-v4";
 const productController = {};
-const Product = require('../models/products');
 
 productController.getProducts = async (req, res) => {
-   // console.log('api/products/   ---getProducts');
-    const products = await Product.find();
+  // console.log('api/products/   ---getProducts');
+  const products = await Product.find();
 
-    res.json({products});
+  res.json({ products });
 };
 
 productController.getCount = async (req, res) => {
-    const count = await Product.countDocuments();
+  const count = await Product.countDocuments();
 
-    res.json(count);
+  res.json(count);
 };
 
 productController.createProduct = async (req, res) => {
-    const product = new Product(req.body);
-
-    await product.save( err => {
-        if (err) 
-        {
-            res.json({"error": err});
-        }
-        else 
-        {
-            res.json({"status": "200"});
-        }
+  let imagesUrl = [];
+  if (req.files.length) {
+    req.files.map(file => {
+      try {
+        let filename = `${Date.now()}-${uuid()}${file.originalname}`;
+        const containerUrl = containerUrlFrom();
+        const BlockBlobURL = BlockBlobURLFrom(containerUrl, filename);
+        uploadStream(BlockBlobURL, file)
+          .then(() => console.log("files uploaded to server"))
+          .catch(error => console.log(`Error - ${error}`));
+        imagesUrl.push(BlockBlobURL.url);
+      } catch (error) {
+        console.log(error);
+      }
     });
+    req.body.images=imagesUrl;
+  }
+
+  const product = new Product(req.body);
+
+  await product.save(err => {
+    if (err) {
+      res.json({ error: err });
+    } else {
+      res.json({ status: "200",imagesUrl});
+    }
+  });
+
 };
 
 productController.editProduct = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const product = {
-        code: req.body.code,
-        description: req.body.description,
-        size: req.body.size,
-        weight: req.body.weight,
-        price: req.body.price,
-        discount: req.body.discount,
-        on_sale: req.body.on_sale,
-        active: req.body.active,
-        stock: req.body.stock,
-        broken_stock: req.body.broken_stock,
-        to_serve: req.body.to_serve,
-        to_receive: req.body.to_receive,
-        ubication: req.body.ubication,
-        images: req.body.images
-    };
+  const product = {
+    code: req.body.code,
+    description: req.body.description,
+    size: req.body.size,
+    weight: req.body.weight,
+    price: req.body.price,
+    discount: req.body.discount,
+    on_sale: req.body.on_sale,
+    active: req.body.active,
+    stock: req.body.stock,
+    broken_stock: req.body.broken_stock,
+    to_serve: req.body.to_serve,
+    to_receive: req.body.to_receive,
+    ubication: req.body.ubication,
+    images: req.body.images
+  };
 
-    await Product.findByIdAndUpdate(id, {$set: product}, {new: true});
+  await Product.findByIdAndUpdate(id, { $set: product }, { new: true });
 
-    res.json({"status":"200"});
+  res.json({ status: "200" });
 };
 
 productController.getActives = async (req, res) => {
-    const products = await Product.find({"active": true});
+  const products = await Product.find({ active: true });
 
-    res.json(products);
+  res.json(products);
 };
 
 productController.getInactives = async (req, res) => {
-    const products = await Product.find({ "active": false });
+  const products = await Product.find({ active: false });
 
-    res.json(products);
+  res.json(products);
 };
 
 productController.getActivesCount = async (req, res) => {
-    const products = await Product.find({"active": true}).countDocuments();
+  const products = await Product.find({ active: true }).countDocuments();
 
-    res.json(products);
+  res.json(products);
 };
 
 productController.getInactivesCount = async (req, res) => {
-    const products = await Product.find({ "active": false }).countDocuments();
+  const products = await Product.find({ active: false }).countDocuments();
 
-    res.json(products);
+  res.json(products);
 };
 
 productController.getProduct = async (req, res) => {
-    const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id);
 
-    res.json(product);
+  res.json(product);
 };
 
 productController.deleteProduct = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    await Product.findByIdAndRemove(id);
+  await Product.findByIdAndRemove(id);
 
-    res.json({"status": "200"});
+  res.json({ status: "200" });
 };
 
 productController.activateProduct = async (req, res) => {
-    console.log(req.params);
-    const { id } = req.params;
+  console.log(req.params);
+  const { id } = req.params;
 
-    await Product.update({_id: id}, {$set: {active: true}}, () => {
-        res.json({"status":"200"});
-    });
+  await Product.update({ _id: id }, { $set: { active: true } }, () => {
+    res.json({ status: "200" });
+  });
 };
 
 productController.deactivateProduct = async (req, res) => {
-    console.log(req.params);
-    const { id } = req.params;
+  console.log(req.params);
+  const { id } = req.params;
 
-    await Product.update({ _id: id }, { $set: { active: false } }, () => {
-        res.json({ "status": "200" });
-    });
+  await Product.update({ _id: id }, { $set: { active: false } }, () => {
+    res.json({ status: "200" });
+  });
 };
 
 productController.addImage = async (req, res) => {
-    const { id } = req.params;
-    
-    const image = {
-        image: req.body.image
-    };
-    const product = await Product.findById(req.params.id);
-    
-    product.images.push(image);
-    await product.save( (err) => {
-        if(err) {
-            res.json(err);
-        }
-        else {
-            res.json({"status": "200"});
-        }
-    });
-    
+  const { id } = req.params;
+
+  const image = {
+    image: req.body.image
+  };
+  const product = await Product.findById(req.params.id);
+
+  product.images.push(image);
+  await product.save(err => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json({ status: "200" });
+    }
+  });
 };
 
 productController.brokenStock = async (req, res) => {
-    const broken = await Product.find( { $where: "this.broken_stock >= this.stock" } );
+  const broken = await Product.find({
+    $where: "this.broken_stock >= this.stock"
+  });
 
-    res.json(broken);
+  res.json(broken);
 };
-    
 
 module.exports = productController;
 
 /** this ends this file
-* server/controllers/product.controller
-**/
+ * server/controllers/product.controller
+ **/

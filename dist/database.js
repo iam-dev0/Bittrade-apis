@@ -1,6 +1,6 @@
 'use strict';
 
-var _config = require('../config/config');
+var _config = require('./config/config');
 
 var mongoose = require('mongoose');
 
@@ -13,3 +13,4 @@ mongoose.connect(_config.URI, {
 });
 
 module.exports = mongoose;
+//# sourceMappingURL=database.js.map
