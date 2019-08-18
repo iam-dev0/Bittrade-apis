@@ -2,6 +2,8 @@
 
 var _azure = require("../azure");
 
+var _util = require("../utils/util");
+
 var _uuidV = require("uuid-v4");
 
 var _uuidV2 = _interopRequireDefault(_uuidV);
@@ -10,14 +12,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Product = require("../models/products");
 
+
 var productController = {};
 
-productController.getProducts = async function (req, res) {
-  // console.log('api/products/   ---getProducts');
-  var products = await Product.find();
+// productController.getProducts = async (req, res) => {
+//   // console.log('api/products/   ---getProducts');
+//   const products = await Product.find();
 
-  res.json({ products: products });
-};
+//   res.json({ products });
+// };
 
 productController.getCount = async function (req, res) {
   var count = await Product.countDocuments();
@@ -26,10 +29,24 @@ productController.getCount = async function (req, res) {
 };
 
 productController.createProduct = async function (req, res) {
-  var imagesUrl = [];
-  if (req.files.length) {
-    req.files.map(function (file) {
-      try {
+  try {
+    var errors = (0, _util.myValidationResult)(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
+
+    if (errors.length > 0) {
+      res.status(422).json({ errors: errors });
+      return;
+    }
+    var files = req.files;
+    var _req$body = req.body,
+        description = _req$body.description,
+        title = _req$body.title,
+        price = _req$body.price,
+        stock = _req$body.stock;
+
+    var imagesUrl = [];
+    if (files && files.length > 0) {
+      files.map(function (file) {
+
         var filename = Date.now() + "-" + (0, _uuidV2.default)() + file.originalname;
         var containerUrl = (0, _azure.containerUrlFrom)();
         var BlockBlobURL = (0, _azure.BlockBlobURLFrom)(containerUrl, filename);
@@ -39,26 +56,42 @@ productController.createProduct = async function (req, res) {
           return console.log("Error - " + error);
         });
         imagesUrl.push(BlockBlobURL.url);
-      } catch (error) {
-        console.log(error);
+      });
+    }
+
+    var product = new Product({ description: description, title: title, price: price, stock: stock, images: imagesUrl });
+
+    await product.save(function (err) {
+      if (err) {
+        res.json({ error: err });
+      } else {
+        res.json({ status: "200", product: product });
       }
     });
-    req.body.images = imagesUrl;
+  } catch (err) {
+    res.json({ error: err });
   }
-
-  var product = new Product(req.body);
-
-  await product.save(function (err) {
-    if (err) {
-      res.json({ error: err });
-    } else {
-      res.json({ status: "200", imagesUrl: imagesUrl });
-    }
-  });
 };
 
+productController.getProductsPagination = async function (req, res, next) {
+  var perPage = 10;
+  var page = req.query.page || 1;
+
+  Product.find({}).skip(perPage * page - perPage).limit(perPage).exec(function (err, products) {
+    if (err) return next(err);
+    Product.count().exec(function (err, count) {
+      if (err) return next(err);
+      res.json({
+        products: products,
+        current: page,
+        pages: Math.ceil(count / perPage)
+      });
+    });
+  });
+};
+//Todo-- implement it correclty
 productController.editProduct = async function (req, res) {
-  var id = req.params.id;
+  var _id = req.params._id;
 
 
   var product = {
@@ -108,7 +141,7 @@ productController.getInactivesCount = async function (req, res) {
 };
 
 productController.getProduct = async function (req, res) {
-  var product = await Product.findById(req.params.id);
+  var product = await Product.findById(req.params._id);
 
   res.json(product);
 };
@@ -143,13 +176,13 @@ productController.deactivateProduct = async function (req, res) {
 };
 
 productController.addImage = async function (req, res) {
-  var id = req.params.id;
+  var _id = req.params._id;
 
 
   var image = {
     image: req.body.image
   };
-  var product = await Product.findById(req.params.id);
+  var product = await Product.findById(_id);
 
   product.images.push(image);
   await product.save(function (err) {

@@ -1,0 +1,9 @@
+"parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the cat that we want to match",
+                        "type": "string"
+                    }
+                ],

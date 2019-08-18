@@ -4,6 +4,11 @@ var express = require('express');
 var morgan = require('morgan');
 var app = express();
 var cors = require('cors');
+var expressValidator = require('express-validator');
+var swaggerUi = require('swagger-ui-express');
+var swaggerDocument = require('./swagger.json');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 var _require = require('./database'),
     mongoose = _require.mongoose;
@@ -20,12 +25,14 @@ app.use(express.static('./public'));
  */
 app.use(morgan('dev'));
 app.use(express.json());
+// app.use(expressValidator())
 app.use(cors());
 
 /**
  * R O U T E S
  */
 app.use('/api/products', require('./routes/product.routes'));
+app.use('/api/user', require('./routes/users.routes'));
 // app.use('/api/clients', require('./routes/clients.routes'));
 // app.use('/api/suppliers', require('./routes/suppliers.routes'));
 /**

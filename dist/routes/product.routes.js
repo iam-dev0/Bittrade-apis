@@ -4,15 +4,23 @@ var _index = require('../multer/index');
 
 var _index2 = _interopRequireDefault(_index);
 
+var _product = require('../Validator/product.validator');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var express = require('express');
 var router = express.Router();
 
+var _require = require('express-validator'),
+    check = _require.check,
+    validationResult = _require.validationResult;
+
 var productsController = require('../controllers/product.controller');
 
-router.get('/', productsController.getProducts);
-router.post('/', _index2.default, productsController.createProduct);
+router.get('/', productsController.getProductsPagination);
+router.post('/', _index2.default, _product.createProduct, productsController.createProduct);
+// router.get('/:page', productsController.getProductsPagination);
+
 // router.get('/count', productsController.getCount);
 // router.get('/actives', productsController.getActives);
 // router.get('/actives/count', productsController.getActivesCount);

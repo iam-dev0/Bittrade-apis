@@ -5,7 +5,6 @@ const { Schema }  = mongoose;
 
 const productSchema = new Schema(
     {
-        product_id: {type: String, required: true, unique: true},
         description: { type: String, required: true },
        // size: { type: String, required: true },
        // weight: { type: String, required: true },

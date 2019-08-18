@@ -1,12 +1,20 @@
-
-
 const express = require('express');
 const router = express.Router();
+const { check, validationResult } = require('express-validator');
 import upload from '../multer/index'
+import {createProduct} from '../Validator/product.validator'
 const productsController = require('../controllers/product.controller');
 
-router.get('/', productsController.getProducts);
-router.post('/',upload, productsController.createProduct);
+
+
+
+router.get('/', productsController.getProductsPagination);
+router.post('/',upload, createProduct, productsController.createProduct);
+router.post('/favorite',productsController.favoriteProduct)
+router.get('/favorite/:id',productsController.favoriteProduct)
+router.delete('/favorite',productsController.favoriteProduct)
+// router.get('/:page', productsController.getProductsPagination);
+
 // router.get('/count', productsController.getCount);
 // router.get('/actives', productsController.getActives);
 // router.get('/actives/count', productsController.getActivesCount);

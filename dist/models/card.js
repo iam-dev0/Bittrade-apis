@@ -22,4 +22,4 @@ var productSchema = new Schema({
 }, { timestamps: true, autoIndex: true });
 
 module.exports = mongoose.model('products', productSchema);
-//# sourceMappingURL=products.js.map
+//# sourceMappingURL=card.js.map
