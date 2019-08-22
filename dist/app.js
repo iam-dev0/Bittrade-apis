@@ -4,11 +4,8 @@ var express = require('express');
 var morgan = require('morgan');
 var app = express();
 var cors = require('cors');
-var expressValidator = require('express-validator');
-var swaggerUi = require('swagger-ui-express');
-var swaggerDocument = require('./swagger.json');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 var _require = require('./database'),
     mongoose = _require.mongoose;
@@ -31,6 +28,7 @@ app.use(cors());
 /**
  * R O U T E S
  */
+app.use('/api-docs', require("./routes/documentation.route"));
 app.use('/api/products', require('./routes/product.routes'));
 app.use('/api/user', require('./routes/users.routes'));
 app.use('/api/card', require('./routes/card.routes'));

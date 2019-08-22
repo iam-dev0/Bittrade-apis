@@ -3,11 +3,9 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
-const expressValidator = require('express-validator')
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const { mongoose } = require('./database');
 
 /**
@@ -28,6 +26,7 @@ app.use(cors());
 /**
  * R O U T E S
  */ 
+app.use('/api-docs',require("./routes/documentation.route"));
 app.use('/api/products', require('./routes/product.routes'));
 app.use('/api/user', require('./routes/users.routes'));
 app.use('/api/card', require('./routes/card.routes'));
