@@ -8,6 +8,10 @@ var _uuidV = require("uuid-v4");
 
 var _uuidV2 = _interopRequireDefault(_uuidV);
 
+var _favoriteProducts = require("../models/favoriteProducts");
+
+var _favoriteProducts2 = _interopRequireDefault(_favoriteProducts);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Product = require("../models/products");
@@ -89,6 +93,73 @@ productController.getProductsPagination = async function (req, res, next) {
     });
   });
 };
+
+productController.AddFavoriteProduct = async function (req, res, next) {
+  try {
+    // const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
+
+    // if (errors.length>0) {
+    //   res.status(422).json({ errors: errors});
+    //   return;
+    // }
+
+    var _req$body2 = req.body,
+        userId = _req$body2.userId,
+        productid = _req$body2.productid;
+
+
+    Product.findOne({ productid: productid }, async function (err, data) {
+      if (err) {
+        res.status(422).json({ errors: res });
+        return;
+      }
+      if (data) {
+        var favoriteproduct = new _favoriteProducts2.default({ userId: userId, product: data });
+
+        await favoriteproduct.save(function (err) {
+          if (err) {
+            res.status(400).json({ error: err });
+          } else {
+            res.status(200).json({ status: "200", favoriteproduct: favoriteproduct });
+          }
+        });
+      } else {
+        res.status(400).json({ success: false, message: "This product doesn't exsist" });
+      }
+    });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+};
+
+productController.GetFavoriteProducts = async function (req, res, next) {
+
+  var id = req.params.id;
+
+  _favoriteProducts2.default.find({ userId: id }, function (err, data) {
+    if (err) {
+      res.status(422).json({ errors: res });
+      return;
+    }
+    if (data) {
+      res.status(200).json({ success: true, message: "There is the list of your favorite Products", product: data });
+    } else {
+      res.status(400).json({ success: false, message: "You don't have any Faviorate right now" });
+    }
+  });
+};
+
+productController.removeFavoriteProduct = async function (req, res) {
+  var _req$query = req.query,
+      productid = _req$query.productid,
+      userId = _req$query.userId;
+
+  Product.remove({ _id: userId, product: { _id: productid } }, function (err, obj) {
+    if (err) res.status(400).json({ error: err });
+    console.log(obj.result.n + " document(s) deleted");
+  });
+};
+
 //Todo-- implement it correclty
 productController.editProduct = async function (req, res) {
   var _id = req.params._id;

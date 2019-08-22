@@ -14,7 +14,7 @@ cardController.addToCard=async (req, res, next)=> {
     
       const {userId,productid}=req.body;
       
-      Product.findOne({ productid }, function(err, data) {
+      Product.findOne({ productid }, async (err, data) =>{
         if (err) {
           res.status(422).json({ errors: res });
           return;

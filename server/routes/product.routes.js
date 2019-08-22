@@ -10,9 +10,9 @@ const productsController = require('../controllers/product.controller');
 
 router.get('/', productsController.getProductsPagination);
 router.post('/',upload, createProduct, productsController.createProduct);
-router.post('/favorite',productsController.favoriteProduct)
-router.get('/favorite/:id',productsController.favoriteProduct)
-router.delete('/favorite',productsController.favoriteProduct)
+router.post('/favorite',productsController.AddFavoriteProduct)
+router.get('/favorite/:id',productsController.GetFavoriteProducts)
+router.delete('/favorite',productsController.removeFavoriteProduct)
 // router.get('/:page', productsController.getProductsPagination);
 
 // router.get('/count', productsController.getCount);

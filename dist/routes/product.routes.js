@@ -19,6 +19,9 @@ var productsController = require('../controllers/product.controller');
 
 router.get('/', productsController.getProductsPagination);
 router.post('/', _index2.default, _product.createProduct, productsController.createProduct);
+router.post('/favorite', productsController.AddFavoriteProduct);
+router.get('/favorite/:id', productsController.GetFavoriteProducts);
+router.delete('/favorite', productsController.removeFavoriteProduct);
 // router.get('/:page', productsController.getProductsPagination);
 
 // router.get('/count', productsController.getCount);

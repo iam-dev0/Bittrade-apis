@@ -85,16 +85,16 @@ productController.getProductsPagination=async (req, res, next)=> {
 
 productController.AddFavoriteProduct=async (req, res, next)=> {
   try {
-    const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
+    // const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
 
-    if (errors.length>0) {
-      res.status(422).json({ errors: errors});
-      return;
-    }
+    // if (errors.length>0) {
+    //   res.status(422).json({ errors: errors});
+    //   return;
+    // }
   
     const {userId,productid}=req.body;
     
-    Product.findOne({ productid }, function(err, data) {
+    Product.findOne({ productid }, async (err, data) =>{
       if (err) {
         res.status(422).json({ errors: res });
         return;

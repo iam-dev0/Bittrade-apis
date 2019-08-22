@@ -95,7 +95,7 @@ clientsController.editPhonesData = async function (req, res) {
         number: { type: String, required: true },
         subfix: { type: String, requied: false},
         memo: { type: String, required: false, description: "use if you need other data" },
-         required: false
+          required: false
     }
     */
 
