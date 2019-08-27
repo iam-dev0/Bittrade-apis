@@ -1,5 +1,5 @@
 {
-    "swagger": "3.0",
+    "swagger": "2.0",
     "info": {
         "version": "1.0.0",
         "title": "BitTrade API",
@@ -15,26 +15,88 @@
     "produces": [
         "application/json"
     ],
-    "tags": [
-        {
-            "name": "bitTrade",
-            "description": "API for bitTrade in the system"
-        }
-    ],
+    "tags": [{
+        "name": "bitTrade",
+        "description": "API for bitTrade in the system"
+    }],
     "host": "localhost:3000",
     "basePath": "/api",
     "paths": {
         "/products": {
-            "get": {
-                "parameters": [
+            "post": {
+
+                "tags": [
+                    "Products"
+                ],
+                "summary": "uploads a Product",
+                "description": "uploads a Product",
+                "operationId": "uploadFile",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                        "name": "title",
+                        "in": "body",
+                        "description": "Title of the product",
+                        "required": true,
+                        "type": "string"
+
+                    },
                     {
-                        "name": "page",
-                        "in": "query",
+                        "name": "description",
+                        "in": "body",
+                        "description": "Description of the product",
+                        "required": true,
+                        "type": "string"
+
+                    },
+                    {
+                        "name": "price",
+                        "in": "body",
+                        "description": "price of the product",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "stock",
+                        "in": "body",
+                        "description": "stock of the product",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+
+                    {
+                        "name": "productimages",
+                        "in": "formData",
+                        "description": "file to upload",
                         "required": false,
-                        "description": "Products Pagination",
-                        "type": "number"
+                        "type": "files"
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                }
+
+
+            },
+            "get": {
+                "parameters": [{
+                    "name": "page",
+                    "in": "query",
+                    "required": false,
+                    "description": "Products Pagination",
+                    "type": "number"
+                }],
                 "tags": [
                     "Products"
                 ],
@@ -43,25 +105,24 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                        "schema": {
-                            "$ref": "#/definitions/Products"
+                            "schema": {
+                                "$ref": "#/definitions/Products"
+                            }
                         }
-                    }
                     }
                 }
             }
+            
         },
         "/user": {
             "get": {
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the user that we want to match",
-                        "type": "string"
-                    }
-                ],
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the user that we want to match",
+                    "type": "string"
+                }],
                 "tags": [
                     "User"
                 ],
@@ -76,17 +137,15 @@
                 }
             },
             "post": {
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "User",
-                        "description": "Create a user",
-                        "require": "true",
-                        "schema": {
-                            "$ref": "#/definitions/CreateUser"
-                        }
+                "parameters": [{
+                    "in": "body",
+                    "name": "User",
+                    "description": "Create a user",
+                    "require": "true",
+                    "schema": {
+                        "$ref": "#/definitions/CreateUser"
                     }
-                ],
+                }],
                 "tags": [
                     "User"
                 ],
@@ -117,17 +176,15 @@
         },
         "/user/login": {
             "post": {
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "User",
-                        "description": "User Login",
-                        "require": "true",
-                        "schema": {
-                            "$ref": "#/definitions/UserLogin"
-                        }
+                "parameters": [{
+                    "in": "body",
+                    "name": "User",
+                    "description": "User Login",
+                    "require": "true",
+                    "schema": {
+                        "$ref": "#/definitions/UserLogin"
                     }
-                ],
+                }],
                 "tags": [
                     "User"
                 ],

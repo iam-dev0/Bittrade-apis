@@ -1,8 +1,9 @@
+import express from "express";
 
-const express = require('express');
+import suppliersController from '../controllers/suppliers.controller';
 const router = express.Router();
 
-const suppliersController = require('../controllers/suppliers.controller');
+
 
 router.get('/', suppliersController.getSuppliers);
 router.get('/:id', suppliersController.getSupplier);

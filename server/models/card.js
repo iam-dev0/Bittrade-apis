@@ -1,6 +1,6 @@
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
-const mongoose = require('mongoose');
-const { Schema }  = mongoose;
 
 const cardSchema = new Schema(
     {
@@ -12,4 +12,6 @@ const cardSchema = new Schema(
 
 
 
-module.exports = mongoose.model('card', cardSchema);
+const card= mongoose.model("card", cardSchema);
+
+export default card;

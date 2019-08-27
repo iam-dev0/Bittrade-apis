@@ -1,4 +1,4 @@
-const { body } = require('express-validator/check')
+import { body }from 'express-validator';
 
 export const createProduct =  [ 
         body('description', 'Disciption Cannot be empty').exists(),

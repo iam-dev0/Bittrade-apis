@@ -1,12 +1,14 @@
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
 
-const express = require('express');
-const morgan = require('morgan');
 const app = express();
-const cors = require('cors');
 
+/* connecting to mongodb 
+*/
+import {mongoose} from './database'
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-const { mongoose } = require('./database');
 
 /**
  * S E T T I N G S

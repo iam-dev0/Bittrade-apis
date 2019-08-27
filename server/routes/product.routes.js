@@ -1,15 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const { check, validationResult } = require('express-validator');
+import express from "express";
+import { check, validationResult } from 'express-validator';
 import upload from '../multer/index'
 import {createProduct} from '../Validator/product.validator'
-const productsController = require('../controllers/product.controller');
+import productsController from '../controllers/product.controller'
+import sendUploadToGCS from "../googlecloudservice"
 
-
+const router = express.Router();
 
 
 router.get('/', productsController.getProductsPagination);
-router.post('/',upload, createProduct, productsController.createProduct);
+router.post('/',upload, createProduct,sendUploadToGCS, productsController.createProduct);
 router.post('/favorite',productsController.AddFavoriteProduct)
 router.get('/favorite/:id',productsController.GetFavoriteProducts)
 router.delete('/favorite',productsController.removeFavoriteProduct)

@@ -1,7 +1,7 @@
-
+import Clients from '../models/clients';
 
 const clientsController = {};
-const Clients = require('../models/clients');;
+
 
 clientsController.getClients = async (req, res) => {
     const clients = await Clients.find();

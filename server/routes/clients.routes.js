@@ -1,10 +1,7 @@
-
-
-
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const clientsController = require('../controllers/clients.controller');
+import clientsController from '../controllers/clients.controller';
 
 router.get('/', clientsController.getClients);
 router.get('/:id', clientsController.getClient);

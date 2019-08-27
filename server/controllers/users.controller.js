@@ -1,7 +1,7 @@
 import { myValidationResult } from "../utils/util";
-
+import User from "../models/users";
 const UsersController = {};
-const User = require("../models/users");
+
 
 UsersController.getUsers = async (req, res) => {
   const User = await User.find();

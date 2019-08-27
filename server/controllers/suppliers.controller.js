@@ -1,8 +1,8 @@
-
+import Suppliers from '../models/suppliers';
 
 const SuppliersController = {};
 
-const Suppliers = require('../models/suppliers');
+
 
 SuppliersController.getSuppliers = async (req, res) => {
     const suppliers = await Suppliers.find();

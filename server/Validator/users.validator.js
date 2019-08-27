@@ -1,4 +1,4 @@
-const { body } = require('express-validator/check')
+import { body }from 'express-validator';
 
 export const createUser =  [ 
         body('name', 'first_name Cannot be empty').exists(),
