@@ -1,6 +1,6 @@
 import uuid from "uuid-v4";
 
-import Product from"../models/products";
+import Product from "../models/products";
 import { containerUrlFrom, BlockBlobURLFrom, uploadStream } from "../azure";
 import { myValidationResult } from "../utils/util";
 import favoriteProduct from "../models/favoriteProducts";
@@ -17,7 +17,7 @@ const productController = {};
 productController.getCount = async (req, res) => {
   const count = await Product.countDocuments();
 
-  res.json(count);
+  res.json({ success: true, message: "Numbers of totally products", count });
 };
 /* Upload Image to Azure
  */
@@ -76,16 +76,17 @@ productController.createProduct = async (req, res) => {
     }
     const { files } = req;
     if (files.cloudStorageError) {
-      res
-        .status(422)
-        .json({
-          errors: cloudStorageError,
-          message:
-            "Sorry Something Happened We'll get back to you as soon as possible"
-        });
+      res.status(422).json({
+        success: false,
+        errors: cloudStorageError,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible"
+      });
       return;
     }
-    const {files:{cloudStorageImageUrls}}=req;
+    const {
+      files: { cloudStorageImageUrls }
+    } = req;
     const { description, title, price, stock } = req.body;
 
     const product = new Product({
@@ -98,17 +99,31 @@ productController.createProduct = async (req, res) => {
 
     await product.save(err => {
       if (err) {
-        res.json({ error: err });
+        res.json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
       } else {
-        res.json({ status: "200", product });
+        res.json({
+          success: true,
+          message: "Product successfully added",
+          product
+        });
       }
     });
   } catch (err) {
-    res.json({ error: err });
+    res.json({
+      success: false,
+      message:
+        "Sorry Something Happened We'll get back to you as soon as possible",
+      error: err
+    });
   }
 };
 
-productController.getProductsPagination = async (req, res, next) => {
+productController.getProductsPagination = async (req, res) => {
   var perPage = 10;
   var page = req.query.page || 1;
 
@@ -116,10 +131,26 @@ productController.getProductsPagination = async (req, res, next) => {
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec((err, products) => {
-      if (err) return next(err);
+      if (err) {
+        return res.json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      }
       Product.count().exec((err, count) => {
-        if (err) return next(err);
+        if (err) {
+          return res.json({
+            success: false,
+            message:
+              "Sorry Something Happened We'll get back to you as soon as possible",
+            error: err
+          });
+        }
         res.json({
+          success: true,
+          message: "List of Products",
           products: products,
           current: page,
           pages: Math.ceil(count / perPage)
@@ -141,7 +172,12 @@ productController.AddFavoriteProduct = async (req, res, next) => {
 
     Product.findOne({ productid }, async (err, data) => {
       if (err) {
-        res.status(422).json({ errors: res });
+        res.status(422).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          errors: res
+        });
         return;
       }
       if (data) {
@@ -149,9 +185,20 @@ productController.AddFavoriteProduct = async (req, res, next) => {
 
         await favoriteproduct.save(err => {
           if (err) {
-            res.status(400).json({ error: err });
+            res.status(400).json({
+              success: false,
+              message:
+                "Sorry Something Happened We'll get back to you as soon as possible",
+              error: err
+            });
           } else {
-            res.status(200).json({ status: "200", favoriteproduct });
+            res.status(200).json({
+              status: "200",
+              success: ture,
+              message:
+                "Sorry Something Happened We'll get back to you as soon as possible",
+              product: favoriteproduct
+            });
           }
         });
       } else {
@@ -161,7 +208,12 @@ productController.AddFavoriteProduct = async (req, res, next) => {
       }
     });
   } catch (err) {
-    res.status(400).json({ error: err });
+    res.status(400).json({
+      success: false,
+      message:
+        "Sorry Something Happened We'll get back to you as soon as possible",
+      error: err
+    });
   }
 };
 
@@ -170,7 +222,12 @@ productController.GetFavoriteProducts = async (req, res, next) => {
 
   favoriteProduct.find({ userId: id }, function(err, data) {
     if (err) {
-      res.status(422).json({ errors: res });
+      res.status(422).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        errors: res
+      });
       return;
     }
     if (data) {
@@ -194,7 +251,13 @@ productController.removeFavoriteProduct = async (req, res) => {
     err,
     obj
   ) {
-    if (err) res.status(400).json({ error: err });
+    if (err)
+      res.status(400).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
     console.log(obj.result.n + " document(s) deleted");
   });
 };
