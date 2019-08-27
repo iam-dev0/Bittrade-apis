@@ -12,7 +12,7 @@
     "build": "npm run clean-windows && mkdir dist && babel server -s -d dist --copy-files",
     "production": "npm run build && node bin/production",
     "start-1": "npm run build && node bin/production",
-    "start":"node dist/app.js"
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "@azure/storage-blob": "^10.0.0-preview",
     "@google-cloud/storage": "^3.2.0",
     "@types/dotenv": "^4.0.3",
+    "coinbase-commerce-node": "^1.0.1",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
