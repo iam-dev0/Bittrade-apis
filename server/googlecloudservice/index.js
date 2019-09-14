@@ -13,9 +13,11 @@ const storage = new Storage({
 const sendUploadToGCS = async (req, res, next) => {
   let imageUrls = [];
   if (!req.files) {
-    req.files.cloudStorageImageUrls = imageUrls;
+    //req.files.cloudStorageImageUrls = imageUrls;
+    req.isFiles='false';
     return next();
   }
+  req.isFiles='true';
   const bucket = storage.bucket(DEFAULT_BUCKET_NAME);
   let promises = [];
 

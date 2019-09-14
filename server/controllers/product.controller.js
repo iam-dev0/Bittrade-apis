@@ -69,7 +69,7 @@ productController.createProduct = async (req, res) => {
 productController.createProduct = async (req, res) => {
   try {
     const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
-
+    let images=[];
     if (errors.length > 0) {
       res.status(422).json({ errors: errors });
       return;
@@ -87,6 +87,11 @@ productController.createProduct = async (req, res) => {
     const {
       files: { cloudStorageImageUrls }
     } = req;
+    
+    if(cloudStorageImageUrls)
+    {
+      images=cloudStorageImageUrls;
+    }
     const { description, title, price, stock } = req.body;
 
     const product = new Product({
@@ -94,7 +99,7 @@ productController.createProduct = async (req, res) => {
       title,
       price,
       stock,
-      images: cloudStorageImageUrls
+      images,
     });
 
     await product.save(err => {
