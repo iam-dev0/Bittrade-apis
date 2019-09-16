@@ -1,74 +1,206 @@
-import Card from "../models/card"
-import Product from "../models/products"
+import Card from "../models/card";
+import Product from "../models/products";
+var ObjectId = require('mongodb').ObjectID;
+
 
 const cardController = {};
 
-cardController.addToCard=async (req, res, next)=> {
-    try {
-      const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
-  
-      if (errors.length>0) {
-        res.status(422).json({ errors: errors});
-        return;
-      }
-    
-      const {userId,productid}=req.body;
-      
-      Product.findOne({ productid }, async (err, data) =>{
-        if (err) {
-          res.status(422).json({ errors: res });
-          return;
-        }
-        if (data) {
-          const Card = new Card({userId,product:data});
-  
-      await Card.save(err => {
-        if (err) {
-          res.status(400).json({ error: err });
-        } else {
-          res.status(200).json({ status: "200", favoriteproduct });
-        }
-      });
-        } else {
-          res.status(400).json({success:false,message:"This product doesn't exsist"});
-        }
-      });
-    } catch (err) {
-      res.status(400).json({ error: err });
-    }
-  }
-  
-cardController.getCard=async (req, res, next)=> {
-  
-    const id=req.params.id;
-      
-    favoriteProduct.find({ userId:id }, function(err, data) {
+cardController.addToCard = async (req, res, next) => {
+  try {
+    // const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
+
+    // if (errors.length>0) {
+    //   res.status(422).json({ errors: errors});
+    //   return;
+    // }
+
+    const { userId, productId } = req.body;
+
+    Product.findOne({ _id: productId }, async (err, data) => {
       if (err) {
-        res.status(422).json({ errors: res });
+        res.status(422).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
         return;
       }
       if (data) {
-        res.status(200).json({success:true,message:"There is the list of your Products in card",product:data});
+        data.quantity = 1;
+        const card = new Card({ userId, product: data });
+
+        await card.save(err => {
+          if (err) {
+            res.status(400).json({
+              success: false,
+              message:
+                "Sorry Something Happened We'll get back to you as soon as possible",
+              error: err
+            });
+          } else {
+            res.status(200).json({
+              success: true,
+              message: "Product Successfully add to Cart",
+              card
+            });
+          }
+        });
       } else {
-        res.status(400).json({success:false,message:"Sorry your card is empty"});
+        res
+          .status(400)
+          .json({ success: false, message: "This product doesn't exsist" });
       }
     });
-    
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message:
+        "Sorry Something Happened We'll get back to you as soon as possible",
+      error: err
+    });
   }
-cardController.removeCardProduct = async (req, res) => {
-const { productid,userId } = req.query;
-Product.
-remove({_id:userId,product:{_id:productid}},function(err, obj) {
-    if (err)  res.status(400).json({ error: err });
-    console.log(obj.result.n + " document(s) deleted");
-})
-
 };
-    
-  
-  
+
+cardController.getCard = async (req, res, next) => {
+  const id = req.params.id;
+
+  Card.find({ userId: id }, function(err, data) {
+    if (err) {
+      res.status(422).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+      return;
+    }
+    if (data) {
+      let products = [];
+      data.map(item => products.push(item.product));
+      res.status(200).json({
+        success: true,
+        message: "There is the list of your Products in cart",
+        products
+      });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Sorry your card is empty" });
+    }
+  });
+};
+cardController.removeCardProduct = async (req, res) => {
+  const { productId, userId } = req.query;
+  Card.remove(
+    { userId, "product._id": ObjectId(productId) },
+    async (err, data) => {
+      if (err) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      } else {
+        if (data.length) {
+          res.status(404).json({
+            success: true,
+            message: "Product doesn't exist"
+          });
+        }
+        res.status(200).json({
+          success: true,
+          message: "Products removed Successfully",
+          data
+        });
+      }
+    }
+  );
+};
+
+cardController.incrementQuantity = async (req, res) => {
+  const { productId, userId } = req.body;
+  let product = card.findOne(
+    { userId: userId, product: { _id: productid } },
+    (err, data) => {
+      if (err) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      } else {
+        if (data.length)
+          res.status(404).json({
+            success: true,
+            message: "Product doesn't exist",
+            product
+          });
+      }
+    }
+  );
+  product.product.quantity++;
+  Card.save(err => {
+    if (err) {
+      res.status(400).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Product Successfully add to Cart",
+        product
+      });
+    }
+  });
+};
+cardController.decrementQuantity = async (req, res) => {
+  const { productId, userId } = req.body;
+  let product = Card.findOne(
+    { userId: userId, product: { _id: productid } },
+    (err, data) => {
+      if (err) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      } else {
+        if (data.length)
+          res.status(200).json({
+            success: true,
+            message: "Product doesn't exist",
+            product
+          });
+      }
+    }
+  );
+  product.product.quantity--;
+  product.save(err => {
+    if (err) {
+      res.status(400).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Product Successfully add to Cart",
+        product
+      });
+    }
+  });
+};
 module.exports = cardController;
 
 /** this ends this file
-* server/controllers/card.controller
-**/
+ * server/controllers/card.controller
+ **/

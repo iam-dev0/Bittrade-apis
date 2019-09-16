@@ -61,7 +61,7 @@ UsersController.Login = async (req, res) => {
         //console.log("Done Login");
         //req.session.userId = data.unique_id;
         //console.log(req.session.userId);
-        res.status(200).json({ success:true,message:"Successfully login", name: data.name, email: data.email });
+        res.status(200).json({ success:true,message:"Successfully login", name: data.name, email: data.email,id:data._id });
       } else {
         res.status(400).json({success:false,message:"login fail"});
       }
