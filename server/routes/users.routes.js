@@ -1,7 +1,8 @@
 import express from "express";
 import {createUser,userLogin} from '../Validator/users.validator'
 import UsersController from '../controllers/users.controller';
-
+import upload from '../multer/user'
+import sendUploadToGCS from "../googlecloudservice/user"
 const router = express.Router();
 
 
@@ -14,9 +15,9 @@ const router = express.Router();
 // router.post('/phone/:id', UsersController.pushPhones);
 // router.post('/paymentcard/:id', UsersController.pushPaymentCard);
 
-
+router.put('/uploadimage/:id',upload,sendUploadToGCS,UsersController.UploadImageUser)
 // router.put('/:id', UsersController.editUsersimpleData);
-// router.put('/email/:id/:email', UsersController.editEmailsData);
+router.put('/email/:id', UsersController.editEmail);
 // router.put('/address/:id/:address', UsersController.editAddressData);
 // router.put('/phones/:phone', UsersController.editPhonesData);
 // router.put('/paymentcard/:id/:idcard', UsersController.editPaymentCard);

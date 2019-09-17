@@ -7,7 +7,7 @@ const app = express();
 /* connecting to mongodb 
 */
 import {mongoose} from './database'
-
+// mongoose.set('debug', true);
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**

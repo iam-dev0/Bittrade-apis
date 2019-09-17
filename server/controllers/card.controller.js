@@ -1,7 +1,6 @@
 import Card from "../models/card";
 import Product from "../models/products";
-var ObjectId = require('mongodb').ObjectID;
-
+var ObjectId = require("mongodb").ObjectID;
 
 const cardController = {};
 
@@ -120,10 +119,11 @@ cardController.removeCardProduct = async (req, res) => {
 };
 
 cardController.incrementQuantity = async (req, res) => {
-  const { productId, userId } = req.body;
-  let product = card.findOne(
-    { userId: userId, product: { _id: productid } },
-    (err, data) => {
+  const { productId, userId, newqty } = req.body;
+  Card.findOneAndUpdate(
+    { userId, "product._id": ObjectId(productId) },
+    { $set: { "product.quantity": newqty } },
+    async (err, data) => {
       if (err) {
         res.status(400).json({
           success: false,
@@ -132,37 +132,28 @@ cardController.incrementQuantity = async (req, res) => {
           error: err
         });
       } else {
-        if (data.length)
-          res.status(404).json({
-            success: true,
-            message: "Product doesn't exist",
-            product
-          });
+        // if (!data.length) {
+        //   res.status(404).json({
+        //     success: true,
+        //     message: "Product doesn't exist",
+        //     data
+        //   });
+          
+        // }
+        res.status(200).json({
+          success: true,
+          message: "Product Quantit Successfully Incremented",
+          data
+        });
       }
     }
   );
-  product.product.quantity++;
-  Card.save(err => {
-    if (err) {
-      res.status(400).json({
-        success: false,
-        message:
-          "Sorry Something Happened We'll get back to you as soon as possible",
-        error: err
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-        message: "Product Successfully add to Cart",
-        product
-      });
-    }
-  });
 };
 cardController.decrementQuantity = async (req, res) => {
-  const { productId, userId } = req.body;
-  let product = Card.findOne(
-    { userId: userId, product: { _id: productid } },
+  const { productId, userId, newqty } = req.body;
+  Card.findOneAndUpdate(
+    { userId, "product._id": ObjectId(productId) },
+    { $set: { "product.quantity": newqty } },
     (err, data) => {
       if (err) {
         res.status(400).json({
@@ -172,32 +163,21 @@ cardController.decrementQuantity = async (req, res) => {
           error: err
         });
       } else {
-        if (data.length)
-          res.status(200).json({
-            success: true,
-            message: "Product doesn't exist",
-            product
-          });
+        // if (!data.length) {
+        //   res.status(404).json({
+        //     success: true,
+        //     message: "Product doesn't exist",
+        //     data
+        //   });
+        // }
+        res.status(200).json({
+          success: true,
+          message: "Product Quantit Successfully Decremented",
+          data
+        });
       }
     }
   );
-  product.product.quantity--;
-  product.save(err => {
-    if (err) {
-      res.status(400).json({
-        success: false,
-        message:
-          "Sorry Something Happened We'll get back to you as soon as possible",
-        error: err
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-        message: "Product Successfully add to Cart",
-        product
-      });
-    }
-  });
 };
 module.exports = cardController;
 
