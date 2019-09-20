@@ -6,21 +6,30 @@ import sendUploadToGCS from "../googlecloudservice/user"
 const router = express.Router();
 
 
-// router.get('/', UsersController.getUsers);
-// router.get('/:id', UsersController.getClient);
- router.post('/login',userLogin,UsersController.Login);
- router.post('/',createUser,UsersController.createUser);
-// router.post('/email/:id', UsersController.pushEmails);
-// router.post('/address/:id', UsersController.pushAddresses);
-// router.post('/phone/:id', UsersController.pushPhones);
-// router.post('/paymentcard/:id', UsersController.pushPaymentCard);
 
+/* GET*/
+ router.get('/', UsersController.getUsers);
+ router.get('/:id', UsersController.getUser); 
+ router.get('/address/:id', UsersController.GetAddressData);
+ router.get('/phone/:id', UsersController.GetPhonesData);
+ router.get('/contactinfo/:id', UsersController.GetContactInfo);
+ router.get('/paymentinfo/:id', UsersController.GetPaymentInfo);
+
+
+/*POST */
+router.post('/login',userLogin,UsersController.Login);
+router.post('/',createUser,UsersController.createUser);
+router.post('/address/:id', UsersController.GetAddressData);
+router.post('/paymentcard/:id', UsersController.pushPaymentInfo);
+
+
+/*PUT */
 router.put('/uploadimage/:id',upload,sendUploadToGCS,UsersController.UploadImageUser)
-// router.put('/:id', UsersController.editUsersimpleData);
 router.put('/email/:id', UsersController.editEmail);
-// router.put('/address/:id/:address', UsersController.editAddressData);
-// router.put('/phones/:phone', UsersController.editPhonesData);
-// router.put('/paymentcard/:id/:idcard', UsersController.editPaymentCard);
+router.put('/contactinfo/:id', UsersController.contactInfo);
+router.put('/address/:id', UsersController.EditAddressData);
+router.put('/phones/:id', UsersController.editPhonesData);
+ router.put('/paymentcard/:id/:idcard', UsersController.editPaymentInfo);
 
 // router.delete('/email/:id/:email', UsersController.deleteEmails);
 // router.delete('/address/:id/:address', UsersController.deleteAddresses);

@@ -11,11 +11,8 @@ const productSchema = new Schema(
     //  on_sale: { type: Boolean, default: false },
     //  active: { type: Boolean, default:false },
     stock: { type: Number, required: true },
-    // broken_stock: { type: Number, required: false },
-    //   to_serve: { type: Number, required: false },
-    //   to_receive: { type: Number, required: false },
-    //   ubication: { type: String, required: false },
     category: [{ type: String }],
+    sell_id:{type:String,required:true},
     brand: { type: String },
     images: [{ type: String }],
     quantity:{type:Number,default:0}

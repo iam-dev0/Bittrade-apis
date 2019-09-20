@@ -67,6 +67,7 @@ productController.createProduct = async (req, res) => {
  */
 
 productController.createProduct = async (req, res) => {
+  const {id} = req.params;
   try {
     const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
     let images=[];
@@ -100,6 +101,7 @@ productController.createProduct = async (req, res) => {
       price,
       stock,
       images,
+      user_id:id,
     });
 
     await product.save(err => {

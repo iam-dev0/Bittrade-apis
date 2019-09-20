@@ -2,27 +2,152 @@ import { myValidationResult } from "../utils/util";
 import User from "../models/users";
 const UsersController = {};
 
-UsersController.getUsers = async (req, res) => {
-  const User = await User.find();
-  let NewUsers = User.map(item => {
-    item.password = "";
-    return item;
-  });
 
-  res.status(200).json({
-    success: true,
-    message: "List of User",
-    data: NewUsers
+/* GET*/
+UsersController.getUsers = async (req, res) => {
+  await User.find({}, async (err, data) => {
+    if (err) {
+      res.status(400).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+      return;
+    }
+    let NewUsers = data.map(item => {
+      item.password = "";
+      return item;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "List of User",
+      data: NewUsers
+    });
   });
 };
-
 UsersController.getUser = async (req, res) => {
   const { id } = req.params;
 
-  await User.findById(id).then(response => {
-    res.json(response);
+  await User.findById(id)
+    .then(response => {
+      response.password="";
+      res.status(200).json({
+        success: true,
+        message: "",
+        data: response
+      });
+    })
+    .catch(err => {
+      res.status(400).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+      return;
+    });
+};
+UsersController.GetAddressData = async (req, res) => {
+  /*
+ 
+    */
+
+  const { id } = req.params;
+  await User.findOne({ _id: id }, async (err, data) => {
+    if (err) {
+      res.status(200).json({
+        success: true,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+    }
+    data.password = "";
+    res.status(200).json({
+      success: true,
+      message: "Sucessfully Edited the Address data",
+      data: data.address
+    });
   });
 };
+UsersController.GetContactInfo = async (req, res) => {
+  const { id } = req.params;
+ 
+  await User.findOne(
+    { _id: id },
+    async (err, data) => {
+      if (err) {
+        console.log(error);
+        res.status(200).json({
+          success: true,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      }
+      data.password = "";
+      res.status(200).json({
+        success: true,
+        message: "Sucessfully Edited the Address data",
+        data: {address:data.address,phone:data.phone}
+      });
+    }
+  );
+};
+UsersController.GetPhonesData = async (req, res) => {
+  const { id } = req.params;
+  const { phone } = req.body;
+
+  await User.findOne({ _id: id }, async (err, data) => {
+    if (err) {
+      res.status(200).json({
+        success: true,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+    }
+    data.password = "";
+    res.status(200).json({
+      success: true,
+      message: "Sucessfully Edited the Address data",
+      data: {
+        phone_added: data.phone_added,
+        phone_verified: data.phone_verified,
+        phone_added: data.phone,
+        phone_added
+      }
+    });
+  });
+};
+UsersController.GetPaymentInfo = async (req, res) => {
+  /*
+
+    */
+
+  const { id } = req.params;
+  await User.findOne({ _id: id }, async (err, data) => {
+    if (err) {
+      res.status(200).json({
+        success: true,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+    }
+    data.password = "";
+    res.status(200).json({
+      success: true,
+      message: "Sucessfully Edited the Address data",
+      data: data.payment_method
+    });
+  });
+};
+
+
+/*POST */
 
 UsersController.createUser = async (req, res) => {
   try {
@@ -76,62 +201,6 @@ UsersController.createUser = async (req, res) => {
     });
   }
 };
-UsersController.UploadImageUser = async (req, res) => {
-  let image="";
-  const {id}=req.params
-  try {
-    const { file } = req;
-    if (file.cloudStorageError) {
-      res.status(422).json({
-        success: false,
-        errors: cloudStorageError,
-        message:
-          "Sorry Something Happened We'll get back to you as soon as possible"
-      });
-      return;
-    }
-    const {
-      file: { cloudStorageImageUrl}
-    } = req;
-    
-    if(cloudStorageImageUrl)
-    {
-      image=cloudStorageImageUrl;
-    }
-    await User.findOneAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          profile_image: image
-        }
-      },
-      async (err, data) => {
-        if (err) {
-          res.status(200).json({
-            success: true,
-            message:
-              "Sorry Something Happened We'll get back to you as soon as possible",
-            error: error
-          });
-        }
-        data.password = "";
-        res.status(200).json({
-          success: true,
-          message: "Sucessfully Edited the Address data",
-          data: data
-        });
-      }
-    );
-    
-  } catch (err) {
-    res.json({
-      success: false,
-      message:
-        "Sorry Something Happened We'll get back to you as soon as possible",
-      error: err
-    });
-  }
-};
 UsersController.Login = async (req, res) => {
   const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
   if (errors.length > 0) {
@@ -175,7 +244,110 @@ UsersController.Login = async (req, res) => {
     }
   });
 };
+UsersController.AddAddressData = async (req, res) => {
+  /*
+        model for req: 
+        {
+            "contact": "contact", no required
+            "street": "street", required
+            "city": "city", required
+            "province": "province", required
+            "zip": "zip", required
+        }
+    */
 
+  const { id } = req.params;
+  await User.findOneAndUpdate(
+    { _id: id },
+    { $set: { addresses: req.body } },
+    async (err, data) => {
+      if (err) {
+        console.log(error);
+        res.status(200).json({
+          success: true,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      }
+      data.password = "";
+      res.status(200).json({
+        success: true,
+        message: "Sucessfully Edited the Address data",
+        data: data
+      });
+    }
+  );
+};
+UsersController.pushPaymentInfo = async (req, res) => {
+  const payment_card = req.body;
+  const { id } = req.params;
+
+  await User.findById(id)
+    .then(User => {
+      User.payment_cards.push(payment_card);
+      User.save();
+    })
+    .catch(e => console.log(e))
+    .then(res.json({ status: "200" }));
+};
+
+/*PUT */
+
+UsersController.UploadImageUser = async (req, res) => {
+  let image = "";
+  const { id } = req.params;
+  try {
+    const { file } = req;
+    if (file.cloudStorageError) {
+      res.status(422).json({
+        success: false,
+        errors: cloudStorageError,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible"
+      });
+      return;
+    }
+    const {
+      file: { cloudStorageImageUrl }
+    } = req;
+
+    if (cloudStorageImageUrl) {
+      image = cloudStorageImageUrl;
+    }
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          profile_image: image
+        }
+      },
+      async (err, data) => {
+        if (err) {
+          res.status(200).json({
+            success: true,
+            message:
+              "Sorry Something Happened We'll get back to you as soon as possible",
+            error: error
+          });
+        }
+        data.password = "";
+        res.status(200).json({
+          success: true,
+          message: "Sucessfully Edited the Address data",
+          data: data
+        });
+      }
+    );
+  } catch (err) {
+    res.json({
+      success: false,
+      message:
+        "Sorry Something Happened We'll get back to you as soon as possible",
+      error: err
+    });
+  }
+};
 UsersController.editEmail = async (req, res) => {
   /*
         model for req: 
@@ -211,23 +383,12 @@ UsersController.editEmail = async (req, res) => {
     }
   );
 };
-
-UsersController.AddAddressData = async (req, res) => {
-  /*
-        model for req: 
-        {
-            "contact": "contact", no required
-            "street": "street", required
-            "city": "city", required
-            "province": "province", required
-            "zip": "zip", required
-        }
-    */
-
+UsersController.contactInfo = async (req, res) => {
   const { id } = req.params;
+  const { line, city, country, zip, phone } = req.body;
   await User.findOneAndUpdate(
     { _id: id },
-    { $push: { addresses: req.body } },
+    { $set: { address: { line, city, country, zip }, phone,phone_added:true} },
     async (err, data) => {
       if (err) {
         console.log(error);
@@ -248,21 +409,10 @@ UsersController.AddAddressData = async (req, res) => {
   );
 };
 UsersController.EditAddressData = async (req, res) => {
-  /*
-        model for req: 
-        {
-            "contact": "contact", no required
-            "street": "street", required
-            "city": "city", required
-            "province": "province", required
-            "zip": "zip", required
-        }
-    */
-
   const { id } = req.params;
   await User.findOneAndUpdate(
     { _id: id },
-    { $set: { addresses: req.body } },
+    { $set: { addresses: req.body, addresses_is_available: true } },
     async (err, data) => {
       if (err) {
         res.status(200).json({
@@ -281,7 +431,6 @@ UsersController.EditAddressData = async (req, res) => {
     }
   );
 };
-
 UsersController.editPhonesData = async (req, res) => {
   /*
         model for phones
@@ -320,21 +469,7 @@ UsersController.editPhonesData = async (req, res) => {
     }
   );
 };
-
-UsersController.pushPaymentCard = async (req, res) => {
-  const payment_card = req.body;
-  const { id } = req.params;
-
-  await User.findById(id)
-    .then(User => {
-      User.payment_cards.push(payment_card);
-      User.save();
-    })
-    .catch(e => console.log(e))
-    .then(res.json({ status: "200" }));
-};
-
-UsersController.editPaymentCard = async (req, res) => {
+UsersController.editPaymentInfo = async (req, res) => {
   const { id } = req.params;
   const { idcard } = req.params;
 
@@ -351,6 +486,7 @@ UsersController.editPaymentCard = async (req, res) => {
 };
 
 
+/* DELETE */
 UsersController.deleteEmails = async (req, res) => {
   const { email } = req.params;
   const { id } = req.params;
@@ -413,9 +549,6 @@ UsersController.deleteUser = async (req, res) => {
   });
 };
 
-
-
-
 UsersController.deletePaymentCard = async (req, res) => {
   const { idcard } = req.params;
   const { id } = req.params;
@@ -433,24 +566,7 @@ UsersController.deletePaymentCard = async (req, res) => {
       res.json({ status: "200" });
     });
 };
-UsersController.editUsersimpleData = async (req, res) => {
-  const { id } = req.params;
 
-  let User = await User.findById(id);
-
-  User.first_name = req.body.first_name;
-  User.last_name = req.body.last_name;
-  User.nick_name = req.body.nick_name;
-  User.tax_id.tax_type = req.body.tax_id.tax_type;
-  User.tax_id.tax_code = req.body.tax_id.tax_code;
-  User.emails = User.emails;
-  User.addresses = User.addresses;
-  User.phones = User.phones;
-
-  await User.save().then(() => {
-    res.json({ status: "200" });
-  });
-};
 module.exports = UsersController;
 
 /** this ends this file

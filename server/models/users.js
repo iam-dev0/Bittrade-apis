@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-
+var ObjectId = require("mongodb").ObjectID;
 const ClientSchema = new Schema(
   {
     first_name: { type: String, required: true },
@@ -9,12 +9,11 @@ const ClientSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     email_verified: { type: Boolean, required: false, default: false },
-    addresses_is_available: { type: Boolean, required: true, default: false },
-    addresses: {
-      house: { type: String, required: false },
-      street: { type: String, required: false },
+    address_is_available: { type: Boolean, required: true, default: false },
+    address: {
+      line: { type: String, required: false },
       city: { type: String, required: false },
-      province: { type: String, required: false },
+      country: { type: String, required: false },
       zip: { type: String, required: false },
       required: false
     },
@@ -24,6 +23,7 @@ const ClientSchema = new Schema(
     payment_method_added: { type: Boolean, requied: false, default: false },
     payment_method: [
       {
+        _id:{type:Schema.Types.ObjectId},
         type: { type: String, requied: true, index: true, trim: true },
         card_number: { type: String, required: false, index: true, trim: true },
         expiry_date: { type: Date, requied: false, trim: true },

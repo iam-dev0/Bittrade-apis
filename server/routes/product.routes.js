@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 router.get('/', productsController.getProductsPagination);
-router.post('/',upload, createProduct,sendUploadToGCS, productsController.createProduct);
+router.post('/:id',upload, createProduct,sendUploadToGCS, productsController.createProduct);
 router.post('/favorite',productsController.AddFavoriteProduct)
 router.get('/favorite/:id',productsController.GetFavoriteProducts)
 router.delete('/favorite',productsController.removeFavoriteProduct)
