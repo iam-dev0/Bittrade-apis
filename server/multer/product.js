@@ -34,6 +34,6 @@ const upload = multer({
   fileFilter: function(req, file, cb){
     checkFileType(file, cb);
   }
-}).array('productimages',6);
+}).array('image',6);
 
 export default upload;

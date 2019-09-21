@@ -4,7 +4,7 @@ const router = express.Router();
 import checkout from '../controllers/checkout.controller';
 
 
-router.get('/', checkout.createCharge);
+router.get('/:id', checkout.createCharge);
 // router.post('/',cardController.addToCard)
 // router.delete('/',cardController.removeCardProduct)
 

@@ -101,7 +101,7 @@ productController.createProduct = async (req, res) => {
       price,
       stock,
       images,
-      user_id:id,
+      seller_id:id,
     });
 
     await product.save(err => {
