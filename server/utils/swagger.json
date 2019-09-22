@@ -25,6 +25,33 @@
     "basePath": "/api",
     "paths": {
         "/products": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "description": "Products Pagination",
+                        "type": "number"
+                    }
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get all Products in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "schema": {
+                                "$ref": "#/definitions/Products"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
             "post": {
                 "tags": [
                     "Products"
@@ -40,9 +67,30 @@
                 ],
                 "parameters": [
                     {
+                        "name": "id",
+                        "in": "path",
+                        "description": "UserId against the product is being Add",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "title",
                         "in": "body",
                         "description": "Title of the product",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "category",
+                        "in": "body",
+                        "description": "category",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "brand",
+                        "in": "body",
+                        "description": "category",
                         "required": true,
                         "type": "string"
                     },
@@ -70,7 +118,7 @@
                         "format": "int64"
                     },
                     {
-                        "name": "productimages",
+                        "name": "image",
                         "in": "formData",
                         "description": "file to upload",
                         "required": false,
@@ -85,53 +133,19 @@
                         }
                     }
                 }
-            },
-            "get": {
-                "parameters": [
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "description": "Products Pagination",
-                        "type": "number"
-                    }
-                ],
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Get all Products in system",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "schema": {
-                                "$ref": "#/definitions/Products"
-                            }
-                        }
-                    }
-                }
             }
         },
         "/user": {
             "get": {
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the user that we want to match",
-                        "type": "string"
-                    }
-                ],
                 "tags": [
                     "User"
                 ],
-                "summary": "Get user by Email in system",
+                "summary": "Get all the user in database",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Products"
+                            "$ref": "#/definitions/Users"
                         }
                     }
                 }
@@ -171,6 +185,31 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/user"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the user that you want to match",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user by Email in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Products"
                         }
                     }
                 }
@@ -307,6 +346,14 @@
                 }
             }
         },
+        "structure": {
+            "success": {
+                "type": "string"
+            },
+            "message": {
+                "type": "string"
+            }
+        },
         "AddToCardParams": {
             "type": "object",
             "properties": {
@@ -405,6 +452,18 @@
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "users": {
+            "type": "object",
+            "properties": {
+                "$ref": "#/definitions/structure",
+                "users": {
+                    "type": "object",
+                    "user": {
+                        "$ref": "#/definitions/user"
+                    }
                 }
             }
         }

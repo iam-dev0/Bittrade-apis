@@ -7,9 +7,11 @@ import sendUploadToGCS from "../googlecloudservice/product"
 
 const router = express.Router();
 
-
+//Done-documentation
 router.get('/', productsController.getProductsPagination);
+//Documentation-1
 router.post('/:id',upload, createProduct,sendUploadToGCS, productsController.createProduct);
+
 router.post('/favorite',productsController.AddFavoriteProduct)
 router.get('/favorite/:id',productsController.GetFavoriteProducts)
 router.delete('/favorite',productsController.removeFavoriteProduct)

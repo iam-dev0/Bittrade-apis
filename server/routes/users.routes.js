@@ -9,7 +9,7 @@ const router = express.Router();
 
 /* GET*/
  router.get('/', UsersController.getUsers);
- router.get('/:id', UsersController.getUser); 
+ router.get('/:id', UsersController.getUser); //done-doc
  router.get('/address/:id', UsersController.GetAddressData);
  router.get('/phone/:id', UsersController.GetPhonesData);
  router.get('/contactinfo/:id', UsersController.GetContactInfo);
