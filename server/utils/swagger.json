@@ -204,12 +204,112 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Get user by Email in system",
+                "summary": "Get user by id in system",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Products"
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/address/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the user that you want to match",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user by id in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/getUserAddressResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/phone/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the user that you want to match",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user by id in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/getUserPhoneResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/contactinfo/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the user that you want to match",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user by id in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/getUserContactInfoResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/paymentcard/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the user that you want to match",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user by id in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/getUserpaymentMethodModelResponse"
                         }
                     }
                 }
@@ -445,43 +545,200 @@
                 }
             }
         },
-        "user": {
+        "paymentMethodModel": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "card_number": {
+                        "type": "string"
+                    },
+                    "expiry_date": {
+                        "type": "string"
+                    },
+                    "walet_address": {
+                        "type": "string"
+                    },
+                    "zip": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "userContactInfoModel": {
             "type": "object",
             "properties": {
-                "name": {
+                "address": {
+                    "type": "boolean"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "userPhoneModel": {
+            "type": "object",
+            "properties": {
+                "phone_added": {
+                    "type": "boolean"
+                },
+                "phone_verified": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "userAddressModel": {
+            "type": "object",
+            "properties": {
+                "line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "zip": {
+                    "type": "string"
+                }
+            }
+        },
+        "getUserContactInfoResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/userContactInfoModel"
+                }
+            }
+        },
+        "getUserAddressResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/userAddressModel"
+                }
+            }
+        },
+        "getUserPhoneResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/userPhoneModel"
+                }
+            }
+        },
+        "getUserpaymentMethodModelResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/paymentMethodModel"
+                }
+            }
+        },
+        "userModel": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "profile_image": {
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
-                "password": {
+                "email_verified": {
+                    "type": "Boolean"
+                },
+                "address_is_available": {
+                    "type": "Boolean"
+                },
+                "address": {
+                    "$ref": "#/definitions/userAddressModel"
+                },
+                "phone": {
                     "type": "string"
+                },
+                "phone_verified": {
+                    "type": "Boolean"
+                },
+                "phone_added": {
+                    "type": "Boolean"
+                },
+                "payment_method_added": {
+                    "type": "Boolean"
+                },
+                "payment_method": {
+                    "$ref": "#/definitions/paymentMethodModel"
+                }
+            }
+        },
+        "user": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/userModel"
                 }
             }
         },
         "users": {
             "type": "object",
             "properties": {
-                "success":{
-                    "type":"boolean"
+                "success": {
+                    "type": "boolean"
                 },
-                "message":{
-                    "type":"string"
+                "message": {
+                    "type": "string"
                 },
                 "users": {
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "email": {
-                                "type": "string"
-                            },
-                            "password": {
-                                "type": "string"
-                            }
+                        "additionalProperties": {
+                            "$ref": "#/definitions/userModel"
                         }
                     }
                 }

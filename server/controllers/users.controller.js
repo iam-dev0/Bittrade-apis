@@ -116,8 +116,7 @@ UsersController.GetPhonesData = async (req, res) => {
       data: {
         phone_added: data.phone_added,
         phone_verified: data.phone_verified,
-        phone_added: data.phone,
-        phone_added
+        phone: data.phone,
       }
     });
   });

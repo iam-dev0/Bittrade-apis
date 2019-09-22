@@ -134,10 +134,10 @@ productController.createProduct = async (req, res) => {
  for both seach by keyword or category
 */
 productController.searchProduct = async (req, res) => {
-  const { keyword, category } = req.query;
-  if (keyword) {
+  const { keyword, is_category } = req.query;
+  if (!is_category) {
     var reg = new RegExp(keyword, "i");
-    Product.find({ title: { $regex: reg } }, function(err, data) {
+    Product.find({ category: { $regex: reg } }, function(err, data) {
       if (err) {
         res.status(422).json({
           success: false,
@@ -166,8 +166,8 @@ productController.searchProduct = async (req, res) => {
       }
     });
   } else {
-    var reg = new RegExp(category, "i");
-    Product.find({ category: { $regex: reg } }, function(err, data) {
+    var reg = new RegExp(keyword, "i");
+    Product.find({ title: { $regex: reg } }, function(err, data) {
       if (err) {
         res.status(422).json({
           success: false,

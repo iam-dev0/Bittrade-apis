@@ -8,12 +8,12 @@ const router = express.Router();
 
 
 /* GET*/
- router.get('/', UsersController.getUsers);
+ router.get('/', UsersController.getUsers); //done-doc
  router.get('/:id', UsersController.getUser); //done-doc
- router.get('/address/:id', UsersController.GetAddressData);
- router.get('/phone/:id', UsersController.GetPhonesData);
- router.get('/contactinfo/:id', UsersController.GetContactInfo);
- router.get('/paymentinfo/:id', UsersController.GetPaymentInfo);
+ router.get('/address/:id', UsersController.GetAddressData);//done-doc
+ router.get('/phone/:id', UsersController.GetPhonesData);//done-doc
+ router.get('/contactinfo/:id', UsersController.GetContactInfo);//done-doc
+ router.get('/paymentinfo/:id', UsersController.GetPaymentInfo);//done-doc
 
 
 /*POST */
