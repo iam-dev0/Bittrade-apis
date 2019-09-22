@@ -92,7 +92,7 @@ productController.createProduct = async (req, res) => {
     if (cloudStorageImageUrls) {
       images = cloudStorageImageUrls;
     }
-    const { description, title, price, stock, categoary, brand } = req.body;
+    const { description, title, price, stock, category, brand } = req.body;
 
     const product = new Product({
       description,
@@ -100,7 +100,7 @@ productController.createProduct = async (req, res) => {
       price,
       stock,
       images,
-      categoary,
+      category,
       brand,
       seller_id: id
     });
@@ -134,7 +134,7 @@ productController.createProduct = async (req, res) => {
  for both seach by keyword or category
 */
 productController.searchProduct = async (req, res) => {
-  const { keyword, categoary } = req.query;
+  const { keyword, category } = req.query;
   if (keyword) {
     var reg = new RegExp(keyword, "i");
     Product.find({ title: { $regex: reg } }, function(err, data) {
@@ -166,8 +166,8 @@ productController.searchProduct = async (req, res) => {
       }
     });
   } else {
-    var reg = new RegExp(categoary, "i");
-    Product.find({ categoary: { $regex: reg } }, function(err, data) {
+    var reg = new RegExp(category, "i");
+    Product.find({ category: { $regex: reg } }, function(err, data) {
       if (err) {
         res.status(422).json({
           success: false,
