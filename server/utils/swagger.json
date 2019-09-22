@@ -145,7 +145,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Users"
+                            "$ref": "#/definitions/users"
                         }
                     }
                 }
@@ -184,7 +184,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user"
+                            "$ref": "#/definitions/users"
                         }
                     }
                 }
@@ -347,11 +347,13 @@
             }
         },
         "structure": {
-            "success": {
-                "type": "string"
-            },
-            "message": {
-                "type": "string"
+            "properties": {
+                "success": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
             }
         },
         "AddToCardParams": {
@@ -433,6 +435,8 @@
         "Products": {
             "type": "object",
             "properties": {
+                "success": "true",
+                "message": "",
                 "Product": {
                     "type": "object",
                     "additionalProperties": {
@@ -458,11 +462,27 @@
         "users": {
             "type": "object",
             "properties": {
-                "$ref": "#/definitions/structure",
+                "success":{
+                    "type":"boolean"
+                },
+                "message":{
+                    "type":"string"
+                },
                 "users": {
-                    "type": "object",
-                    "user": {
-                        "$ref": "#/definitions/user"
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }

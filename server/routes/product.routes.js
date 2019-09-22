@@ -12,9 +12,10 @@ router.get('/', productsController.getProductsPagination);
 //Documentation-1
 router.post('/:id',upload, createProduct,sendUploadToGCS, productsController.createProduct);
 
-router.post('/favorite',productsController.AddFavoriteProduct)
-router.get('/favorite/:id',productsController.GetFavoriteProducts)
-router.delete('/favorite',productsController.removeFavoriteProduct)
+router.post('/favorite/:userid/:productid',productsController.AddFavoriteProduct)
+router.get('/favorite/:userid',productsController.GetFavoriteProducts)
+router.delete('/favorite/:userid/:productid',productsController.removeFavoriteProduct)
+router.get('/search',productsController.searchProduct)
 // router.get('/:page', productsController.getProductsPagination);
 
 // router.get('/count', productsController.getCount);

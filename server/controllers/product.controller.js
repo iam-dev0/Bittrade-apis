@@ -4,7 +4,7 @@ import Product from "../models/products";
 import { containerUrlFrom, BlockBlobURLFrom, uploadStream } from "../azure";
 import { myValidationResult } from "../utils/util";
 import favoriteProduct from "../models/favoriteProducts";
-
+var ObjectId = require("mongodb").ObjectID;
 const productController = {};
 
 // productController.getProducts = async (req, res) => {
@@ -67,10 +67,10 @@ productController.createProduct = async (req, res) => {
  */
 
 productController.createProduct = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
-    let images=[];
+    let images = [];
     if (errors.length > 0) {
       res.status(422).json({ errors: errors });
       return;
@@ -88,12 +88,11 @@ productController.createProduct = async (req, res) => {
     const {
       files: { cloudStorageImageUrls }
     } = req;
-    
-    if(cloudStorageImageUrls)
-    {
-      images=cloudStorageImageUrls;
+
+    if (cloudStorageImageUrls) {
+      images = cloudStorageImageUrls;
     }
-    const { description, title, price, stock } = req.body;
+    const { description, title, price, stock, categoary, brand } = req.body;
 
     const product = new Product({
       description,
@@ -101,7 +100,9 @@ productController.createProduct = async (req, res) => {
       price,
       stock,
       images,
-      seller_id:id,
+      categoary,
+      brand,
+      seller_id: id
     });
 
     await product.save(err => {
@@ -126,6 +127,73 @@ productController.createProduct = async (req, res) => {
       message:
         "Sorry Something Happened We'll get back to you as soon as possible",
       error: err
+    });
+  }
+};
+/*
+ for both seach by keyword or category
+*/
+productController.searchProduct = async (req, res) => {
+  const { keyword, categoary } = req.query;
+  if (keyword) {
+    var reg = new RegExp(keyword, "i");
+    Product.find({ title: { $regex: reg } }, function(err, data) {
+      if (err) {
+        res.status(422).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          errors: res
+        });
+        return;
+      }
+
+      if (data) {
+        let products = data;
+        // data.map(item => {
+        //   products.push(item);
+        // });
+        res.status(200).json({
+          success: true,
+          message: "List of product you searched",
+          products
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Sorry can't match any product"
+        });
+      }
+    });
+  } else {
+    var reg = new RegExp(categoary, "i");
+    Product.find({ categoary: { $regex: reg } }, function(err, data) {
+      if (err) {
+        res.status(422).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          errors: res
+        });
+        return;
+      }
+
+      if (data) {
+        let products = data;
+        // data.map(item => {
+        //   products.push(item);
+        // });
+        res.status(200).json({
+          success: true,
+          message: "List of product you searched",
+          products
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Sorry can't match any product"
+        });
+      }
     });
   }
 };
@@ -175,9 +243,9 @@ productController.AddFavoriteProduct = async (req, res, next) => {
     //   return;
     // }
 
-    const { userId, productid } = req.body;
+    const { userid, productid } = req.params;
 
-    Product.findOne({ productid }, async (err, data) => {
+    await Product.findOne({ _id: productid }, async (err, data) => {
       if (err) {
         res.status(422).json({
           success: false,
@@ -188,7 +256,7 @@ productController.AddFavoriteProduct = async (req, res, next) => {
         return;
       }
       if (data) {
-        const favoriteproduct = new favoriteProduct({ userId, product: data });
+        const favoriteproduct = new favoriteProduct({ userid, product: data });
 
         await favoriteproduct.save(err => {
           if (err) {
@@ -201,9 +269,8 @@ productController.AddFavoriteProduct = async (req, res, next) => {
           } else {
             res.status(200).json({
               status: "200",
-              success: ture,
-              message:
-                "Sorry Something Happened We'll get back to you as soon as possible",
+              success: true,
+              message: "Favorite add successfully",
               product: favoriteproduct
             });
           }
@@ -225,9 +292,9 @@ productController.AddFavoriteProduct = async (req, res, next) => {
 };
 
 productController.GetFavoriteProducts = async (req, res, next) => {
-  const id = req.params.id;
+  const userid = req.params.userid;
 
-  favoriteProduct.find({ userId: id }, function(err, data) {
+  favoriteProduct.find({ userid: userid }, function(err, data) {
     if (err) {
       res.status(422).json({
         success: false,
@@ -237,11 +304,16 @@ productController.GetFavoriteProducts = async (req, res, next) => {
       });
       return;
     }
+
     if (data) {
+      let products = [];
+      data.map(item => {
+        products.push(item.product);
+      });
       res.status(200).json({
         success: true,
         message: "There is the list of your favorite Products",
-        product: data
+        products
       });
     } else {
       res.status(400).json({
@@ -253,20 +325,45 @@ productController.GetFavoriteProducts = async (req, res, next) => {
 };
 
 productController.removeFavoriteProduct = async (req, res) => {
-  const { productid, userId } = req.query;
-  Product.remove({ _id: userId, product: { _id: productid } }, function(
-    err,
-    obj
-  ) {
-    if (err)
-      res.status(400).json({
-        success: false,
-        message:
-          "Sorry Something Happened We'll get back to you as soon as possible",
-        error: err
-      });
-    console.log(obj.result.n + " document(s) deleted");
-  });
+  const { userid, productid } = req.params;
+  // Product.remove({ _id: userid, product: { _id: productid } }, function(
+  //   err,
+  //   obj
+  // ) {
+  //   if (err)
+  //     res.status(400).json({
+  //       success: false,
+  //       message:
+  //         "Sorry Something Happened We'll get back to you as soon as possible",
+  //       error: err
+  //     });
+  //   console.log(obj.result.n + " document(s) deleted");
+  // });
+  favoriteProduct.remove(
+    { userid, "product._id": ObjectId(productid) },
+    async (err, data) => {
+      if (err) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Sorry Something Happened We'll get back to you as soon as possible",
+          error: err
+        });
+      } else {
+        if (data.length) {
+          res.status(404).json({
+            success: true,
+            message: "Product doesn't exist"
+          });
+        }
+        res.status(200).json({
+          success: true,
+          message: "Products removed Successfully",
+          data
+        });
+      }
+    }
+  );
 };
 
 //Todo-- implement it correclty
