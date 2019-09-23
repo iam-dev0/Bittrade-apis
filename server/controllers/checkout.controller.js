@@ -67,10 +67,10 @@ checkout.createCharge = async (req, res) => {
       });
  LumSum=LumSumPrice(products);
     var firstChargeObj = new Charge({
-      description: `${userData.name}\n${userData.email}`,
+      description: `${userData.email}`,
       metadata: {
-        user_id: id,
-        products
+        "customer_id": "id_1005",
+        "customer_name": "Name"
       },
       name: "BitTrade",
       payments: [],
