@@ -72,7 +72,7 @@ checkout.createCharge = async (req, res) => {
         user_id: id,
         products
       },
-      name: "Zidaory",
+      name: "BitTrade",
       payments: [],
       local_price: {
         amount:  `${LumSum}`,
