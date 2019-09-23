@@ -21,7 +21,8 @@
             "description": "API for bitTrade in the system"
         }
     ],
-    "host": "localhost:3000",
+    "_host": "localhost:3000",
+    "host": "bittrade-252909.appspot.com",
     "basePath": "/api",
     "paths": {
         "/products": {
@@ -42,10 +43,8 @@
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "content": {
-                            "schema": {
-                                "$ref": "#/definitions/Products"
-                            }
+                        "schema": {
+                            "$ref": "#/definitions/Products"
                         }
                     }
                 }
@@ -184,7 +183,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/users"
+                            "$ref": "#/definitions/user"
                         }
                     }
                 }
@@ -482,11 +481,52 @@
                 "price": {
                     "type": "number"
                 },
+                "category": {
+                    "type": "string"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "seller_id": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
                 "stock": {
                     "type": "number"
                 },
                 "images": {
-                    "type": "array"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Products": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
                 }
             }
         },
@@ -529,19 +569,6 @@
                 },
                 "password": {
                     "type": "string"
-                }
-            }
-        },
-        "Products": {
-            "type": "object",
-            "properties": {
-                "success": "true",
-                "message": "",
-                "Product": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/Product"
-                    }
                 }
             }
         },
