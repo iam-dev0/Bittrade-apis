@@ -135,7 +135,7 @@ productController.createProduct = async (req, res) => {
 */
 productController.searchProduct = async (req, res) => {
   const { keyword, is_category } = req.query;
-  if (is_category) {
+  if (is_category=='true') {
     var reg = new RegExp(keyword, "i");
     Product.find({ category: { $regex: reg } }, function(err, data) {
       if (err) {
