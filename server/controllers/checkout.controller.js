@@ -1,5 +1,4 @@
 import Card from "../models/card";
-import Product from "../models/products";
 import User from "../models/users";
 import { Coinbase_API_Key } from "../config/config";
 var coinbase = require("coinbase-commerce-node");

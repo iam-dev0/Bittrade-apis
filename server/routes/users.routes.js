@@ -31,11 +31,7 @@ router.put('/address/:id', UsersController.EditAddressData);
 router.put('/phones/:id', UsersController.editPhonesData);
  router.put('/paymentcard/:id/:idcard', UsersController.editPaymentInfo);
 
-// router.delete('/email/:id/:email', UsersController.deleteEmails);
-// router.delete('/address/:id/:address', UsersController.deleteAddresses);
-// router.delete('/phone/:id/:phone', UsersController.deletePhones);
-// router.delete('/:id',UsersController.deleteClient);
-// router.delete('/paymentcard/:id/:idcard', UsersController.deletePaymentCard);
+
 
 module.exports = router;
 /** this ends this file
