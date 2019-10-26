@@ -19,7 +19,7 @@ const router = express.Router();
 /*POST */
 router.post('/login',userLogin,UsersController.Login);
 router.post('/',createUser,UsersController.createUser);
-router.post('/address/:id', UsersController.GetAddressData);
+router.post('/address/:id', UsersController.AddAddressData);
 router.post('/paymentcard/:id', UsersController.pushPaymentInfo);
 
 

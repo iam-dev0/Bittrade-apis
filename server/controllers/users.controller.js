@@ -67,7 +67,7 @@ UsersController.GetAddressData = async (req, res) => {
     data.password = "";
     res.status(200).json({
       success: true,
-      message: "Sucessfully Edited the Address data",
+      message: "Data for the user",
       data: data.address
     });
   });
@@ -258,7 +258,7 @@ UsersController.AddAddressData = async (req, res) => {
   const { id } = req.params;
   await User.findOneAndUpdate(
     { _id: id },
-    { $set: { addresses: req.body } },
+    { $set: { addresses: req.body,address_is_available:true } },
     async (err, data) => {
       if (err) {
         console.log(error);
