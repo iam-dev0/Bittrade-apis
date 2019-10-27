@@ -7,64 +7,60 @@ import favoriteProduct from "../models/favoriteProducts";
 var ObjectId = require("mongodb").ObjectID;
 const productController = {};
 
-// productController.getProducts = async (req, res) => {
-//   // console.log('api/products/   ---getProducts');
-//   const products = await Product.find();
-
-//   res.json({ products });
-// };
-
 productController.getCount = async (req, res) => {
   const count = await Product.countDocuments();
 
   res.json({ success: true, message: "Numbers of totally products", count });
 };
-/* Upload Image to Azure
- */
-/*
-productController.createProduct = async (req, res) => {
-  try {
-    const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
+productController.getMyProducts = async (req, res) => {
+  const id = req.params.id;
 
-    if (errors.length>0) {
-      res.status(422).json({ errors: errors});
+  Product.find({ seller_id: id }, function(err, data) {
+    if (err) {
+      res.status(422).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
       return;
     }
-    const {files}=req;
-    const {description,title,price,stock}=req.body;
-    let imagesUrl = [];
-    if (files && files.length>0) {
-        files.map(file => {
-       
-          let filename = `${Date.now()}-${uuid()}${file.originalname}`;
-          const containerUrl = containerUrlFrom();
-          const BlockBlobURL = BlockBlobURLFrom(containerUrl, filename);
-          uploadStream(BlockBlobURL, file)
-            .then(() => console.log("files uploaded to server"))
-            .catch(error => console.log(`Error - ${error}`));
-          imagesUrl.push(BlockBlobURL.url);
-        
+    if (data) {
+      res.status(200).json({
+        success: true,
+        message: "There is the list of your Products ",
+        products: data
       });
-    
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Sorry your card is empty" });
     }
-
-    const product = new Product({description,title,price,stock,images:imagesUrl});
-
-    await product.save(err => {
-      if (err) {
-        res.json({ error: err });
-      } else {
-        res.json({ status: "200", product });
-      }
-    });
-  } catch (err) {
-    res.json({ error: err });
-  }
+  });
 };
-*/
 
-/* Upload images to Google Cloud Services Storage
- */
+productController.deleteMyProducts = async (req, res) => {
+  const { id,pid } = req.params;
+  Product.remove({ _id: ObjectId(pid) }, async (err, data) => {
+    if (err) {
+      res.status(400).json({
+        success: false,
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
+      });
+    } else {
+      if (data.length) {
+        res.status(404).json({
+          success: true,
+          message: "Product doesn't exist"
+        });
+      }
+      req.params.id=id;
+      productController.getMyProducts(req, res);
+    }
+  });
+};
 
 productController.createProduct = async (req, res) => {
   const { id } = req.params;
@@ -130,12 +126,10 @@ productController.createProduct = async (req, res) => {
     });
   }
 };
-/*
- for both seach by keyword or category
-*/
+
 productController.searchProduct = async (req, res) => {
   const { keyword, is_category } = req.query;
-  if (is_category==="true") {
+  if (is_category === "true") {
     var reg = new RegExp(keyword, "i");
     Product.find({ category: { $regex: reg } }, function(err, data) {
       if (err) {
@@ -366,7 +360,7 @@ productController.removeFavoriteProduct = async (req, res) => {
   );
 };
 
-//Todo-- implement it correclty
+//--------------------------------------------------//
 productController.editProduct = async (req, res) => {
   const { _id } = req.params;
 

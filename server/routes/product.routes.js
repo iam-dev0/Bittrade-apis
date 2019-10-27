@@ -12,12 +12,13 @@ router.get('/', productsController.getProductsPagination);
 //Documentation-1
 router.post('/:id',upload, createProduct,sendUploadToGCS, productsController.createProduct);
 
+router.get('/myproducts/:id', productsController.getMyProducts);
 router.post('/favorite/:userid/:productid',productsController.AddFavoriteProduct)
 router.get('/favorite/:userid',productsController.GetFavoriteProducts)
 router.delete('/favorite/:userid/:productid',productsController.removeFavoriteProduct)
 router.get('/search',productsController.searchProduct)
 
-
+router.delete('/:id/:pid', productsController.deleteMyProducts);
 module.exports = router;
 
 /** this ends this file
